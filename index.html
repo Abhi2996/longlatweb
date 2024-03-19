@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Location</title>
+</head>
+<body>
+
+<p>Geolocation updates every 2 seconds.</p>
+
+<p id="demo"></p>
+
+<script>
+var x = document.getElementById("demo");
+
+function getLocation() {
+    if (navigator.geolocation) {
+        setInterval(function() {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        }, 2000); // Update every 2 seconds
+    } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+function showPosition(position) {
+    var latitude = position.coords.latitude;
+    var longitude = position.coords.longitude;
+    x.innerHTML = "Latitude: " + latitude + "<br>Longitude: " + longitude;
+
+    // AJAX request to update location in PHP
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+        }
+    };
+    xhttp.open("POST", "http://192.168.1.27/safety_car/update_location.php", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("latitude=" + latitude + "&longitude=" + longitude);
+}
+
+// Start getting location updates when the page loads
+getLocation();
+</script>
+
+</body>
+</html>
